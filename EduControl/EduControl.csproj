@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net7.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.4"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.12" />
+        <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.11" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0"/>
+        <PackageReference Include="Vostok.Configuration.Abstractions" Version="0.1.16-pre000022" />
+        <PackageReference Include="Vostok.Logging.Abstractions" Version="1.0.32-pre000071" />
+        <PackageReference Include="Vostok.Logging.Console" Version="1.0.10-pre000021" />
+        <PackageReference Include="Vostok.Logging.Formatting" Version="1.0.14-pre000036" />
+        <PackageReference Include="Vostok.Logging.Microsoft" Version="2.0.16-pre000026" />
+
+
+
+
+    </ItemGroup>
+
+
+
+
+</Project>
