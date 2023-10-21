@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-dev
+    environment:
+      POSTGRES_DB: "EduControl"
+      POSTGRES_USER: "Dev"
+      POSTGRES_PASSWORD: "123123"
+    volumes:
+      - ./init/:/docker-entrypoint-initdb.d
+      - ./data/:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
