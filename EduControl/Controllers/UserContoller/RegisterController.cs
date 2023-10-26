@@ -24,11 +24,11 @@ public class RegisterController : ControllerBase
     public async Task<ApiResult<string>> Post([FromBody] RequestNewUser newUser)
     {
         var user = await _accounts.Get(newUser.UserName);
-        if (user.Value != null) return "this username is Busy";
+        if (user.Value != null) return "username is busy";
 
         var account = Account.From(newUser);
         await _accounts.Add(account);
         
-        return "Аккаунт создан"; //todo: а что выглядит неплохо, аха)(()
+        return "Account created"; //todo: а что выглядит неплохо, аха)(()
     }
 }

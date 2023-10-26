@@ -5,7 +5,7 @@ using EduControl.Controllers.AppController.model;
 namespace EduControl.DataBase.ModelBd;
 
 [Table("book", Schema = "edu_control")]
-public class Book
+public record Book : IEntity, IUserLink
 {
     [Key] [Column("id")] [Required] public Guid Id { get; set; }
     [Column("name")] [Required] public string Name { get; set; }
@@ -17,12 +17,13 @@ public class Book
     //   return From(requestNewBook); // эх а прикольная могла бы выйту штука
     //}
     
-    public static Book From(RequestNewBook requestNewBook, Account account)
-        => new ()
+  
+    public static Book From(RequestNewBook request, Account account)
+        => new Book()
         {
-            Desc = requestNewBook.Desc,
+            Desc = request.Desc,
             Id = Guid.NewGuid(),
-            Name = requestNewBook.Name,
+            Name = request.Name,
             UserId = account.Id
         };
 }

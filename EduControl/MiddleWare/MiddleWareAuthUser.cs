@@ -8,7 +8,7 @@ namespace EduControl.MiddleWare;
 public class MiddleWareAuthUser
 {
     private static readonly ApiResult<Account>
-        AccountNotFound = new("auth:Account-not-found", "try authorization", 403);
+        AccountNotFound = new("auth:cookie-is-empty", "try authorization", 401);
 
     private readonly RequestDelegate _next;
     private readonly ILog _log;
@@ -25,16 +25,17 @@ public class MiddleWareAuthUser
 
     public async Task InvokeAsync(HttpContext context, AccountScope accountScope)
     {
-        _log.Info("GetUserByTokenMiddleWare");
         if (!context.Request.Cookies.TryGetValue("token", out var token) || string.IsNullOrEmpty(token))
         {
             await context.Response.WriteAsJsonAsync(AccountNotFound);
             return;
         }
+        
         _log.Info($"token here: {token}");
         var tokenResponse = await _tokens.Get(token);
         if (tokenResponse.HasError() || tokenResponse.Value == null)
         {
+            _log.Warn($"enter with token {token} with error {tokenResponse.Error}");
             context.Response.StatusCode = 403;
             await context.Response.WriteAsJsonAsync(tokenResponse);
             return;
@@ -45,6 +46,7 @@ public class MiddleWareAuthUser
         var accountResponse = await _accounts.Get(tokenData);
         if (accountResponse.HasError() || accountResponse.Value == null)
         {
+            _log.Warn($"try take account by token with error {accountResponse.Error}");
             context.Response.StatusCode = 403;
             await context.Response.WriteAsJsonAsync(accountResponse);
             return;

@@ -2,8 +2,8 @@ CREATE SCHEMA edu_control
 
 CREATE TABLE IF NOT EXISTS token
 (
-    value text primary key not null,
-    user_id varchar(256) not null,
+    value varchar(255) primary key not null,
+    user_id uuid not null,
     create_dt date not null
 )
 

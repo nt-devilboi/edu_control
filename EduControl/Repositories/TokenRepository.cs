@@ -25,7 +25,7 @@ public class TokenRepository : ITokenRepository
         var tokenData = await _db.Tokens.FirstOrDefaultAsync(x => x.Value == token);
         return tokenData switch
         {
-            null => new Result<Token, GetError>(GetError.NotFound, "Haven't token"),
+            null => new Result<Token, GetError>(GetError.Error, "Invalid token"),
             _ => new Result<Token, GetError>(tokenData)
         };
     }

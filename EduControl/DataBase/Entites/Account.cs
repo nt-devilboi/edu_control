@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 namespace EduControl.DataBase.ModelBd;
 
 [Table("account", Schema = "edu_control")]
-public class Account : IFromConvert<Account, RequestNewUser>
+public class Account
 {
     [Column("id")] [Key] public Guid Id { get; set; }
     [Column("user_name")] public string UserName { get; set; }
@@ -21,4 +21,7 @@ public class Account : IFromConvert<Account, RequestNewUser>
             UserName = entity.UserName,
             Id = Guid.NewGuid()
         };
+
+    public bool IsMy(IUserLink entity)
+        => entity.UserId == Id;
 }

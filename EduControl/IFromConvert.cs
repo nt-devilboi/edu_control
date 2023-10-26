@@ -1,6 +1,8 @@
+using EduControl.DataBase.ModelBd;
+
 namespace EduControl;
 
-public interface IFromConvert<out T, in TFrom>
+public interface IFromConvert<in T>
 {
-    public static abstract T From(TFrom entity);
+    public static abstract TValue From<TValue>(T request, Account account);
 }
