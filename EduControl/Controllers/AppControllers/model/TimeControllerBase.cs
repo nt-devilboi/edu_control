@@ -6,15 +6,8 @@ using Vostok.Logging.Abstractions;
 
 namespace EduControl.Controllers.AppController.model;
 
-public abstract class TimeControllerBase
+public abstract class TimeControllerBase 
 {
-    private static ApiResult<T> EntityNotFound<T>(string e) =>
-        new($"app:{e}-not-found", string.Empty, 403);
-
-    private static ApiResult<T> EntityNotYour<T>(string e) =>
-        new($"app:{e}-not-your", string.Empty, 403);
-
-    private static ApiResult<T> EntityExisted<T>(string e) => new($"app:{e}-name-is-busy", String.Empty, 403);
     private readonly ILog _log;
     private readonly AccountScope _accountScope;
 
@@ -24,29 +17,41 @@ public abstract class TimeControllerBase
         _accountScope = accountScope;
     }
     
+    
     protected async Task<ApiResult<T>> Get<T>(IRepository<T> repository, Guid id) where T : IUserLink
     {
         var entity = await repository.Get(id);
         if (entity == null)
         {
             _log.Info($"{nameof(entity)} With guid {id} not found");
-            return EntityNotFound<T>(nameof(entity));
+            return ExceptionEntity.NotFound<T>();
         }
 
         if (!_accountScope.Account.IsMy(entity))
         {
             _log.Info($"{nameof(entity)} belongs to other account");
-            return EntityNotYour<T>(nameof(entity));
+            return ExceptionEntity.BelongsToOtherUser<T>();
         }
 
 
         return entity;
     }
 
-    [HttpPost("remove/{id:guid}")]
+    protected async Task<ApiResult<List<T>>> Get<T>(IRepository<T> repository) where T: IUserLink
+    {
+        var entities = await repository.Get(_accountScope.Account);
+        if (entities.Count == 0)
+        {
+            _log.Info($"user: {_accountScope.Account.UserName} don't have {entities.GetType().Name}");
+            return ExceptionEntity.NotFound<List<T>>();
+        }
+
+        return new ApiResult<List<T>>(entities);
+    }
+    
     public async Task<IActionResult> Remove<T>(IRepository<T> repository, Guid id) where T : IUserLink
     {
-        var entity = await repository.Get(id);
+        var entity = await repository.Get(id); //todo maybe make manangeRepo.set<T>(); 
         if (entity == null)
         {
             _log.Info($"Book With id {id} not Found");
@@ -67,8 +72,8 @@ public abstract class TimeControllerBase
     {
         if (!_accountScope.Account.IsMy(entity))
         {
-            _log.Info($"{nameof(entity)} belongs to other account");
-            return EntityNotYour<T>(nameof(entity));
+            _log.Info($"{entity.GetType().Name} belongs to other account");
+            return ExceptionEntity.BelongsToOtherUser<T>();
         }
 
         var bookResponse = await repository.Update(entity);

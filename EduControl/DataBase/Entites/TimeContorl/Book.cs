@@ -4,8 +4,8 @@ using EduControl.Controllers.AppController.model;
 
 namespace EduControl.DataBase.ModelBd;
 
-[Table("book", Schema = "edu_control")]
-public record Book : IEntity, IUserLink
+[Table("book", Schema = "time_control")]
+public record Book : IEntity, IUserLink, IName
 {
     [Key] [Column("id")] [Required] public Guid Id { get; set; }
     [Column("name")] [Required] public string Name { get; set; }

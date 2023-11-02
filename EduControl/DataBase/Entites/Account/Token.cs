@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EduControl.Controllers.Model;
 
-[Table("token", Schema = "edu_control")] 
+[Table("token", Schema = "time_control")] 
 public class Token
 {
     [Column("value")] [Key] public string Value { get; set; }

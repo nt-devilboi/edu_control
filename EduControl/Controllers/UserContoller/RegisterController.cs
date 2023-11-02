@@ -25,9 +25,7 @@ public class RegisterController : ControllerBase
     {
         var user = await _accounts.Get(newUser.UserName);
         if (user.Value != null) return "username is busy";
-
-        var account = Account.From(newUser);
-        await _accounts.Add(account);
+        await _accounts.Add(newUser); //todo maybe code is becoming harder for read?
         
         return "Account created"; //todo: а что выглядит неплохо, аха)(()
     }

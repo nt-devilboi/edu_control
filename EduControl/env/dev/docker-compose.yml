@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: "Dev"
       POSTGRES_PASSWORD: "123123"
     volumes:
-      - ./init/:/docker-entrypoint-initdb.d
       - ./data/:/var/lib/postgresql/data
+      - ./init/init.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5432:5432"

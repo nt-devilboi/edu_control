@@ -21,25 +21,19 @@ public class AuthController: ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> GetUser(RequestGetToken requestUser)
+    public async Task<ApiResult<string>> GetUser(RequestGetToken requestUser)
     {
         var response = await _accounts.Get(requestUser.UserName);
-        if (response.HasError())
+        if (response.HasError() || response.Value == null)
         {
-            return new StatusCodeResult(403);
+            return new ApiResult<string>(response.Error.ToString(), response.ErrorExplain, 403);
         }
         
         var account = response.Value;
-        if (account == null)
-        {
-            _log.Info($"user: {requestUser.UserName} not found");
-            return new StatusCodeResult(403);
-        }
-
         var token = Token.From(GenerateCode.GenerateToken(), account);
         
         await _tokens.Add(token);
         HttpContext.Response.Cookies.Append("token", token.Value);
-        return new StatusCodeResult(200);
+        return "token recive";
     } 
 }

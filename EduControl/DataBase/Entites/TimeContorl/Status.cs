@@ -5,8 +5,8 @@ using EduControl.Controllers.AppController.model;
 
 namespace EduControl.DataBase.ModelBd;
 
-[Table("status", Schema = "edu_control")]
-public record Status : IUserLink
+[Table("status", Schema = "time_control")]
+public record Status : IEntity,IUserLink, IName
 {
     [Key] [Column("id")] [Required] public Guid Id { get; set; }
     [Column("user_id")] [Required] public Guid UserId { get; set; }

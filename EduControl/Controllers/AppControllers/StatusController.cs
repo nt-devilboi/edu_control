@@ -8,10 +8,9 @@ using Vostok.Logging.Abstractions;
 namespace EduControl.Controllers.AppController;
 
 [ApiController]
-[Route("status")]
+[Route("api/status")]
 public class StatusController: TimeControllerBase
 {
-    private static ApiResult<Status> StatusExisted = new ApiResult<Status>("Status with this name exsisted", "change name", 403);
     private readonly ManageTime _manageTime;
     private readonly ILog _log;
     private readonly AccountScope _accountScope;
@@ -30,7 +29,7 @@ public class StatusController: TimeControllerBase
         if (statusResponse.Value != null)
         {
             _log.Info("status with this name exsisted");
-            return StatusExisted;
+            return ExceptionEntity.BusyName<Status>();
         }
         
         var newStatus = Status.From(requestStatus, _accountScope.Account);
@@ -38,6 +37,12 @@ public class StatusController: TimeControllerBase
         
         _log.Info($"status Added With id {statusLoaded.Id} by user {_accountScope.Account.UserName}");
         return statusLoaded;
+    }
+    
+    [HttpGet]
+    public async Task<ApiResult<List<Status>>> GetAll()
+    {
+        return await Get(_manageTime.Status);
     }
 
     [HttpGet("{id:guid}")]

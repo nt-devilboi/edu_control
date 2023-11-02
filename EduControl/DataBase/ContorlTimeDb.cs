@@ -7,7 +7,7 @@ namespace EduControl.DataBase;
 public class ControlTimeDb : DbContext
 {
     public DbSet<Book> Books { get; set; }
-    public DbSet<Event> Events { get; set; }
+    public DbSet<Event?> Events { get; set; }
     public DbSet<Status> Statuses { get; set; }
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Token> Tokens { get; set; }

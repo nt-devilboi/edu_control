@@ -1,4 +1,6 @@
-CREATE SCHEMA edu_control
+CREATE DATABASE EduControl;
+
+CREATE SCHEMA time_control
 
 CREATE TABLE IF NOT EXISTS token
 (
@@ -25,21 +27,31 @@ CREATE TABLE IF NOT EXISTS book
         references account (id)
 )
 
-CREATE TABLE event (
-  id UUID PRIMARY KEY not null ,
-  status_id UUID NOT NULL,
-  book_id UUID NOT NULL,
-  start TIMESTAMPTZ NOT NULL
+
+CREATE TABLE IF NOT EXISTS status
+(
+    id          uuid PRIMARY KEY,
+    user_id     uuid,
+    name        varchar,
+    description varchar,
+    constraint fk_user_id foreign key (user_id)
+        references account (id)
+
 )
 
-CREATE TABLE status (
-    id uuid PRIMARY KEY,
-    user_id uuid,
-    name varchar,
-    description varchar
+
+CREATE TABLE event
+(
+    id        UUID PRIMARY KEY not null,
+    status_id UUID             NOT NULL,
+    book_id   UUID             NOT NULL,
+    start     timestamp        NOT NULL,
+    "end"     timestamp,
+    constraint fk_Status_id foreign key (status_id)
+        references status (id),
+    constraint fk_book_id foreign key (book_id)
+        references book (id)
 );
 
-INSERT INTO edu_control.account
-    VAlUES ('f66dbda6-10ef-4aea-ae13-6b83fbcef433', 'devil', 'turnickii.n@gmail.com', 'asldfjasdfawvasdfja');
 
-INSERT INTO edu_control.book VALUES('5998216c-00d9-4ead-b598-941b49a8c580', 'f66dbda6-10ef-4aea-ae13-6b83fbcef433', 'sdfads', 'react')
+

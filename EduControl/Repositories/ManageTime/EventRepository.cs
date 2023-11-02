@@ -1,35 +1,53 @@
+using EduControl.DataBase;
 using EduControl.DataBase.ModelBd;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Vostok.Logging.Abstractions;
 
 namespace EduControl.Repositories;
 
-public class EventRepository : IRepository<Event>
+public class EventRepository : IEventRepository
 {
-    public Task<Event> Insert(Event item)
+    private readonly ControlTimeDb _db;
+    private readonly ILog _log;
+
+    public EventRepository(ControlTimeDb db, ILog log)
+    {
+        _db = db;
+        _log = log;
+    }
+
+    public async Task<Event?> Insert(Event? item)
+    {
+        var @event = await _db.Events.AddAsync(item);
+        await _db.SaveChangesAsync();
+
+        return @event.Entity;
+    }
+
+    public Task<List<Event>> GetFrom(Book book)
     {
         throw new NotImplementedException();
     }
 
-    public Task<Event> Get(Guid id)
+    public async Task<Event?> Get(Guid id)
     {
-        throw new NotImplementedException();
+        return await _db.Events.FirstOrDefaultAsync(x => x.Id == id);
     }
 
-    public Task<Result<Event?, GetError>> Get(string name)
+    public async Task<Result<Event, GetError>> Update(Event request)
     {
-        throw new NotImplementedException();
-    }
+        var entity = await _db.Events.FirstOrDefaultAsync(x => x.Id == request.Id);
+        if (entity == null) return new Result<Event, GetError>(GetError.NotFound, String.Empty);
 
-    public Task<Result<Event, GetError>> Update(Event request)
-    {
-        throw new NotImplementedException();
+        entity.End = request.End;
+        entity.Start = request.Start;
+        await _db.SaveChangesAsync();
+        
+        return new Result<Event, GetError>(entity);
     }
 
     public Task Remove(Event item)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task Find(Guid id)
     {
         throw new NotImplementedException();
     }

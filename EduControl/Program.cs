@@ -1,4 +1,6 @@
 using System.Xml;
+using EduControl.Controllers.AppController;
+using EduControl.Controllers.AppController.Model;
 using EduControl.Controllers.Model;
 using EduControl.DataBase;
 using EduControl.DataBase.ModelBd;
@@ -24,9 +26,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IRepository<Book>, BookRepository>();
 builder.Services.AddSingleton<IRepository<Status>, StatusRepository>();
-builder.Services.AddSingleton<IRepository<Event>, EventRepository>();
+builder.Services.AddSingleton<IEventRepository, EventRepository>();
 builder.Services.AddSingleton<ITokenRepository, TokenRepository>();
 builder.Services.AddSingleton<IAccountRepository, AccountRepository>();
+builder.Services.AddSingleton<IStatisticsService, StatisticsService>();
 builder.Services.AddSingleton<ControlTimeDb>();
 builder.Services.AddSingleton<ManageTime>();
 builder.Services.AddScoped<AccountScope>();
@@ -44,7 +47,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseWhen(x => x.Request.Path.StartsWithSegments("/book"), c =>
+app.UseWhen(x => x.Request.Path.StartsWithSegments("/api"), c =>
 {
     c.UseMiddleware<MiddleWareAuthUser>();
 });
