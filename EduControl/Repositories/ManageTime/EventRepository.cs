@@ -25,9 +25,10 @@ public class EventRepository : IEventRepository
         return @event.Entity;
     }
 
-    public Task<List<Event>> GetFrom(Book book)
+    public async Task<List<Event>> GetFrom(Book book)
     {
-        throw new NotImplementedException();
+        var events = await _db.Events.Where(x => x.BookId == book.Id).ToListAsync();
+        return events;
     }
 
     public async Task<Event?> Get(Guid id)

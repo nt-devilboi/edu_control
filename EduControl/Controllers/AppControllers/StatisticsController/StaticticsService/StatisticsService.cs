@@ -1,34 +1,23 @@
 using EduControl.Controllers.AppControllers.StatisticsController.StaticticsService;
 using EduControl.DataBase.ModelBd;
-using EduControl.Repositories;
 
 namespace EduControl.Controllers.AppController.Model;
 
 public class StatisticsService : IStatisticsService
 {
-    private readonly ManageTime _manageTime;
-
-    public StatisticsService(ManageTime manageTime)
-    {
-        _manageTime = manageTime;
-    }
-
     public EventStatistics WithData(List<Event> events)
     {
-        return new EventStatistics(events, _manageTime);
+        return new EventStatistics(events);
     }
 }
-
-
 
 public class EventStatistics
 {
     private List<Event> Events { get; }
-    private readonly ManageTime _manage;
-    public EventStatistics(List<Event> events, ManageTime manage)
+
+    public EventStatistics(List<Event> events)
     {
         Events = events;
-        _manage = manage;
     }
 
     public EventStatistics From(DateTime dateTime)
@@ -36,23 +25,52 @@ public class EventStatistics
         var result = new List<Event>();
         foreach (var @event in Events)
         {
-            if (@event.Start >= dateTime)
-                
+            if (@event.Start > dateTime) continue;
+
+            @event.Start = dateTime;
+            result.Add(@event);
         }
+
+        
+        return new EventStatistics(result);
     }
 
     public EventStatistics To(DateTime dateTime)
     {
-        throw new NotImplementedException();
+        var result =  new List<Event>();
+        foreach (var @event in Events)
+        {
+            if (@event.End < dateTime) continue;
+
+            @event.End = dateTime;
+            result.Add(@event);
+        }
+
+        return new EventStatistics(result);
     }
 
-    public List<StatisticsStatusData> DivideByStatus()
+    public List<StatisticsStatusData> DivideByStatus(List<Status> statuses)
     {
+        throw new NotImplementedException();
         //будет hashset, который будет проверять этот статус уже взят из бд или нет.
     }
+
     // потом уже Linq 
-    public StatisticsStatusData TotalTime()
+    public List<StatisticsStatusData> TotalTime()
     {
-        // вернуть с status "allStatuses"
+        var result = new StatisticsStatusData
+        {
+            Status = new Status
+            {
+                Name = "total time"
+            }
+        };
+
+        foreach (var @event in Events)
+        {
+            result.TotalTime += @event.GetTime();
+        }
+        
+        return new List<StatisticsStatusData> { result };
     }
 }

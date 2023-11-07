@@ -12,7 +12,7 @@ public record Event
     [Column("status_id")] [Required] public Guid StatusId { get; set; }
     [Column("book_id")] [Required] public Guid BookId { get; set; }
     [Column("start")] [Required] public DateTime Start { get; set; }
-    [Column("end")] public DateTime End { get; set; }
+    [Column("end")]  public DateTime End { get; set; }
 
     public static implicit operator Event(RequestEvent requestEvent)
         => From(requestEvent);
@@ -25,4 +25,9 @@ public record Event
             StatusId = requestEvent.StatusId,
             Start = DateTime.UtcNow
         };
+
+    public TimeSpan GetTime()
+    {
+        return End - Start;
+    }
 }

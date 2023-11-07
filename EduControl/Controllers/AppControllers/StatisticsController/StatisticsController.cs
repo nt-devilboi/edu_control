@@ -1,4 +1,5 @@
 using EduControl.Controllers.AppController.Model;
+using EduControl.Controllers.AppControllers.StatisticsController.StaticticsService;
 using EduControl.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Vostok.Logging.Abstractions;
@@ -20,18 +21,18 @@ public class StatisticsController
     }
 
     [HttpGet]
-    public async Task<ApiResult<ResponseStatics>> Get([FromQuery] string bookName)
+    public async Task<ApiResult<List<StatisticsStatusData>>> Get([FromQuery] string bookName)
     {
         var bookResponse = await _manageTime.Book.Get(bookName);
         if (bookResponse.HasError() || bookResponse.Value == null)
         {
-            return new ApiResult<ResponseStatics>(bookResponse.Error.ToString(), bookResponse.ErrorExplain, 403);
+            return new ApiResult<List<StatisticsStatusData>>(bookResponse.Error.ToString(), bookResponse.ErrorExplain, 403);
         }
 
         var book = bookResponse.Value;
 
         var events = await _manageTime.Event.GetFrom(book);
 
-        _statistics.WithData(events);
+        return _statistics.WithData(events).TotalTime();
     }
 }
