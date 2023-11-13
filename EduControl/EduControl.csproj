@@ -27,6 +27,10 @@
 
 
 
+    <ItemGroup>
+      <Folder Include="Domain\" />
+    </ItemGroup>
+
     </ItemGroup>
 
 
