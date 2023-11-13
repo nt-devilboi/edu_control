@@ -36,7 +36,7 @@ public class AccountRepository : IAccountRepository
         var account = await _db.Accounts.FirstOrDefaultAsync(x => x.UserName == userName);
         return account switch
         {
-            null => new Result<Account, GetError>(GetError.NotFound, "account haven't founded"),
+            null => new Result<Account, GetError>(GetError.NotFound, "account not found"),
             _ => new Result<Account, GetError>(account)
         };
     }
